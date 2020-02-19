@@ -1,0 +1,19 @@
+---
+    language: osgeo
+    default_versions:
+      - name: osgeo
+        version: 0.0.1
+    exclude_files:
+    - ".git/"
+    - ".gitignore"
+    - ".gitmodules"
+    - ".rspec"
+    - buildpack-packager/
+    - osgeo_buildpack-*v*.zip
+    dependencies:
+      - name: osgeo
+        version: 0.0.1
+        cf_stacks:
+          - cflinuxfs2
+        uri: osgeo-0.0.1-linux-x64.tar.gz
+        md5: 
