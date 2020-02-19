@@ -1,7 +1,9 @@
 package supply
 
 import (
+	"fmt"
 	"io"
+	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack"
 )
@@ -12,6 +14,9 @@ type Stager interface {
 	DepDir() string
 	DepsIdx() string
 	DepsDir() string
+	WriteProfileD(string, string) error
+	LinkDirectoryInDepDir(string, string) error
+	WriteEnvFile(string, string) error
 }
 
 type Manifest interface {
@@ -43,5 +48,44 @@ type Supplier struct {
 func (s *Supplier) Run() error {
 	s.Log.BeginStep("Supplying osgeo")
 
+	var dep libbuildpack.Dependency
+	dep, err := s.Manifest.DefaultVersion("osgeo")
+	if err != nil {
+		return err
+	}
+	OsgeoInstallDir := filepath.Join(s.Stager.DepDir(), "osgeo")
+	if err := s.Installer.InstallDependency(dep, OsgeoInstallDir); err != nil {
+		return err
+	}
+
+	var environmentVars = map[string]string{
+		"GDAL_DATA":          filepath.Join(OsgeoInstallDir, "share/gdal"),
+		"PROJ_LIB":           filepath.Join(OsgeoInstallDir, "share/proj"),
+		"PATH":               filepath.Join(OsgeoInstallDir, "bin") + ":${PATH}",
+		"LD_LIBRARY_PATH":    filepath.Join(OsgeoInstallDir, "lib") + ":${LD_LIBRARY_PATH}",
+		"LDFLAGS":            "-" + filepath.Join(OsgeoInstallDir, "lib"),
+		"CPLUS_INCLUDE_PATH": filepath.Join(OsgeoInstallDir, "include"),
+		"C_INCLUDE_PATH":     filepath.Join(OsgeoInstallDir, "include"),
+	}
+
+	for envVar, envValue := range environmentVars {
+		fmt.Print(envValue)
+		if err := s.Stager.WriteEnvFile(envVar, envValue); err != nil {
+			return err
+		}
+	}
+
+	scriptContents := fmt.Sprintf(`export GDAL_DATA=$DEPS_DIR/%s/osgeo/share/gdal
+export PROJ_LIB=$DEPS_DIR/%s/osgeo/share/proj
+export PATH=$DEPS_DIR/%s/osgeo/bin:${PATH}
+export LD_LIBRARY_PATH=$DEPS_DIR/%s/osgeo/lib:${LD_LIBRARY_PATH}
+export LDFLAGS=-L$DEPS_DIR/%s/osgeo/lib
+export CPLUS_INCLUDE_PATH=$DEPS_DIR/%s/osgeo/include/
+export C_INCLUDE_PATH=$DEPS_DIR/%s/osgeo/include/
+`, s.Stager.DepsIdx(), s.Stager.DepsIdx(), s.Stager.DepsIdx(),
+		s.Stager.DepsIdx(), s.Stager.DepsIdx(), s.Stager.DepsIdx(),
+		s.Stager.DepsIdx())
+
+	return s.Stager.WriteProfileD("osgeo.sh", scriptContents)
 	return nil
 }
