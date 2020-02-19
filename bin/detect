@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+BUILD_DIR=$1
+echo $BUILDDIR
+BP=$(dirname $(dirname $0))
+echo $BP
+
+echo "osgeo `cat $BP/VERSION`"

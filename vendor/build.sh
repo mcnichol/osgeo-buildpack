@@ -9,43 +9,30 @@ sandbox=/tmp/sandbox
 osgeolib=$sandbox/osgeolib
 pythonsp=$osgeolib/python-osgeolib
 
-apt-get update && apt-get install -y build-essential \
-                   libsqlite3-dev \
-                   sqlite3
+# apt-get update && apt-get install -y build-essential \
+#                    libsqlite3-dev \
+#                    sqlite3
 
-mkdir -p $osgeolib
+# mkdir -p $osgeolib
+# cd $sandbox
+
+# # compile proj
+# wget http://download.osgeo.org/proj/proj-6.3.1.tar.gz
+# tar -xf proj-6.3.1.tar.gz && cd proj-6.3.1/
+# ./configure --prefix=$osgeolib --enable-static=no
+# make install
 cd $sandbox
 
-# compile proj
-wget http://download.osgeo.org/proj/proj-6.3.1.tar.gz
-tar -xf proj-6.3.1.tar.gz && cd proj-6.3.1/
-./configure --prefix=$osgeolib --enable-static=no
-make install
-cd $sandbox
 
 # compile gdal
 wget http://download.osgeo.org/gdal/3.0.4/gdal-3.0.4.tar.gz
 tar xf gdal-3.0.4.tar.gz && cd gdal-3.0.4/
-./configure --prefix=$osgeolib \
-    --with-jpeg \
-    --with-png=internal \
-    --with-geotiff=internal \
-    --with-libtiff=internal \
+ ./configure --prefix=$osgeolib --enable-static=no --with-proj=$osgeolib \
     --with-libz=internal \
     --with-curl \
-    --with-gif=internal \
     --with-expat \
-    --with-threads \
-    --with-ecw=$osgeolib \
-    --with-mrsid=$osgeolib \
-    --with-mrsid_lidar=$osgeolib \
-    --enable-static=no
+    --with-threads
 make install
-# cd swig/python
-# python setup.py build
-# mkdir -p $pythonsp
-# PYTHONPATH=$pythonsp
-# python setup.py install --prefix=$pythonsp
 cd $sandbox
 
 

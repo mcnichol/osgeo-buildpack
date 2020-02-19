@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+# set -x          # enable debugging
+
+# Paths.
+build_dir=$1
+cache_dir=$2
+deps=$3
+index=$4
+bp_dir=$(cd $(dirname $0); cd ..; pwd)
+vendor_dir=$build_dir/.heroku/vendor
+
+source $bp_dir/bin/common.sh
+
+mkdir -p $vendor_dir
+
+# The location of the pre-compiled cryptography binary.
+
+status "Bootstrapping osgeolib."
+# Download and extract into target vendor directory.
+tar zxv $deps/-C $vendor_dir 
+
+# Update env variables
+status "Building runtime environment."
+mkdir -p $build_dir/.profile.d
+echo 'export GDAL_DATA="/app/.heroku/vendor/share/gdal"' >> $build_dir/.profile.d/osgeo.sh
+echo 'export PROJ_LIB="/app/.heroku/vendor/share/proj"' >> $build_dir/.profile.d/osgeo.sh
+echo 'export GEOS_LIBRARY_PATH="/app/.heroku/vendor/lib"' >> $build_dir/.profile.d/osgeo.sh
+echo 'export PATH="/app/.heroku/vendor/bin":"${PATH}"' >> $build_dir/.profile.d/osgeo.sh
+echo 'export LD_LIBRARY_PATH="/app/.heroku/vendor/lib":"${LD_LIBRARY_PATH}"' >> $build_dir/.profile.d/osgeo.sh
+status "Done."
