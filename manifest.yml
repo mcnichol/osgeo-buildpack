@@ -1,19 +1,24 @@
 ---
-    language: osgeo
-    default_versions:
-      - name: osgeo
-        version: 0.0.1
-    exclude_files:
-    - ".git/"
-    - ".gitignore"
-    - ".gitmodules"
-    - ".rspec"
-    - buildpack-packager/
-    - osgeo_buildpack-*v*.zip
-    dependencies:
-      - name: osgeo
-        version: 0.0.1
-        cf_stacks:
-          - cflinuxfs3
-        uri: https://github.com/warroyo/osgeo-buildpack/releases/download/v0.0.1/osgeolib-0.0.1-linux-x64.tar.gz
-        sha256: ee20b20c02b56efc4f18fb7416b8077286acb17fd32c4062b1caf25f5e581e0e
+language: osgeo
+default_versions:
+- name: osgeo
+  version: 0.0.1
+dependency_deprecation_dates: []
+dependencies:
+- name: osgeo
+  version: 0.0.1
+  cf_stacks:
+      - cflinuxfs3
+  uri: https://github.com/warroyo/osgeo-buildpack/releases/download/v0.0.1/osgeolib-0.0.1-linux-x64.tar.gz
+  sha256: ee20b20c02b56efc4f18fb7416b8077286acb17fd32c4062b1caf25f5e581e0e
+
+include_files:
+  - README.md
+  - VERSION
+  - bin/detect
+  - bin/compile
+  - bin/supply
+  - bin/finalize
+  - bin/release
+  - manifest.yml
+pre_package: scripts/build.sh
