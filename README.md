@@ -79,7 +79,7 @@ becuase osgeo needs to be installed in an a user space and/or offline inside of 
 1. execute the build script from the root of this repo
 
 ```bash
-docker run -v scripts:/app -it --env arch=cflinuxfs3 cloudfoundry/cflinuxfs3 /app/build-osgeo.sh
+docker run -v ${PWD}/scripts:/app -it --env arch=cflinuxfs3 cloudfoundry/cflinuxfs3 /app/build-osgeo.sh
 ```
 2. this will output a `tar.gz` that will then be uploaded to github releases
 3. update the dependencies in the `manifest.yml` to reflect the new version
