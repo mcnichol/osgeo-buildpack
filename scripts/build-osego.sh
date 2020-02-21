@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ##
-# docker run -v $PWD:/app -it cloudfoundry/cflinuxfs3 /app/build.sh
+# docker run -v $PWD:/app -it --env arch=cflinuxfs3 cloudfoundry/cflinuxfs3 /app/build.sh
 ##
 set -eo pipefail
 
@@ -43,4 +43,4 @@ rm -fr $osgeolib/include/boost
 
 # tar up directory
 cd /tmp/sandbox/osgeolib
-tar -czf /app/osgeolib-${version}-linux-x64.tar.gz *
+tar -czf /app/osgeolib-${version}-${arch}-linux-x64.tar.gz *

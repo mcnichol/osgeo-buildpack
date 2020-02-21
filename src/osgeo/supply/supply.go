@@ -58,12 +58,20 @@ func (s *Supplier) Run() error {
 		return err
 	}
 
+	if err := s.Stager.LinkDirectoryInDepDir(filepath.Join(s.Stager.DepDir(), "osgeo", "bin"), "bin"); err != nil {
+		return err
+	}
+	if err := s.Stager.LinkDirectoryInDepDir(filepath.Join(s.Stager.DepDir(), "osgeo", "lib"), "lib"); err != nil {
+		return err
+	}
+	if err := s.Stager.LinkDirectoryInDepDir(filepath.Join(s.Stager.DepDir(), "osgeo", "include"), "include"); err != nil {
+		return err
+	}
+
 	var environmentVars = map[string]string{
 		"GDAL_DATA":          filepath.Join(OsgeoInstallDir, "share/gdal"),
 		"PROJ_LIB":           filepath.Join(OsgeoInstallDir, "share/proj"),
-		"PATH":               filepath.Join(OsgeoInstallDir, "bin") + ":${PATH}",
-		"LD_LIBRARY_PATH":    filepath.Join(OsgeoInstallDir, "lib") + ":${LD_LIBRARY_PATH}",
-		"LDFLAGS":            "-" + filepath.Join(OsgeoInstallDir, "lib"),
+		"LDFLAGS":            "-L" + filepath.Join(OsgeoInstallDir, "lib"),
 		"CPLUS_INCLUDE_PATH": filepath.Join(OsgeoInstallDir, "include"),
 		"C_INCLUDE_PATH":     filepath.Join(OsgeoInstallDir, "include"),
 	}
@@ -77,14 +85,11 @@ func (s *Supplier) Run() error {
 
 	scriptContents := fmt.Sprintf(`export GDAL_DATA=$DEPS_DIR/%s/osgeo/share/gdal
 export PROJ_LIB=$DEPS_DIR/%s/osgeo/share/proj
-export PATH=$DEPS_DIR/%s/osgeo/bin:${PATH}
-export LD_LIBRARY_PATH=$DEPS_DIR/%s/osgeo/lib:${LD_LIBRARY_PATH}
 export LDFLAGS=-L$DEPS_DIR/%s/osgeo/lib
 export CPLUS_INCLUDE_PATH=$DEPS_DIR/%s/osgeo/include/
 export C_INCLUDE_PATH=$DEPS_DIR/%s/osgeo/include/
 `, s.Stager.DepsIdx(), s.Stager.DepsIdx(), s.Stager.DepsIdx(),
-		s.Stager.DepsIdx(), s.Stager.DepsIdx(), s.Stager.DepsIdx(),
-		s.Stager.DepsIdx())
+		s.Stager.DepsIdx(), s.Stager.DepsIdx())
 
 	return s.Stager.WriteProfileD("osgeo.sh", scriptContents)
 	return nil

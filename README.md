@@ -1,4 +1,62 @@
-## Buildpack User Documentation
+## OSGEO Buildpack
+
+this buildpack can be used as an additional buildpack in a multi-buildpack scenario to install the osgeo packages into the droplet. This will install the low level OSGEO packages but not any language specific bindings, those can be installed with a lanuguage specific buildpack. see the python example below. this is a minimal buildpack and should be used in conjunction with another buildpack. most of the heavy lifting is done in the [build script](/scripts/osgeo-build.sh). 
+
+inspiration taken from this [buildpack](https://github.com/planetfederal/osgeolib-buildpack)
+
+### Included Packages 
+
+* proj-6.3.1
+* gdal-3.0.4
+
+### Added ENV Vars
+
+the following vars are added to the runtime environment of the droplet
+
+`GDAL_DATA`
+`PROJ_LIB`
+`LDFLAGS`
+`CPLUS_INCLUDE_PATH`
+`C_INCLUDE_PATH`
+
+
+### Usage
+
+this buildpack will work with both `cflinuxfs2` or `cflinuxfs3`. you will need to use a different build for each though.
+
+the latest releases can be downloaded from the releases page in this repo. there are cached and unchached versions.
+
+1. download the latest release of your choice for `cflinuxfs3` or `cflinuxfs2`
+2. upload the buildpack to your foundation
+   ```bash
+    cf create-buildpack [BUILDPACK_NAME] [BUILDPACK_ZIP_FILE_PATH] [POSITION]
+   ```
+3. create a manifest file to use the buildpack with another builpack
+
+```yml
+applications:
+- name: test-gdal
+  buildpacks:
+  - osgeo_buildpack
+  - python_buildpack 
+```
+
+4. push your application, depending on if your buildpack is cached or not it may go to the internet to download the vendored osgeo libs.
+
+### Building the vendored osgeo libs
+**only needed to be done when updating versions of osgeo libs**
+
+becuase osgeo needs to be installed in an a user space and/or offline inside of the droplet we need to vendor the packages.
+
+1. execute the build script from the root of this repo
+
+```bash
+docker run -v scripts:/app -it --env arch=cflinuxfs3 cloudfoundry/cflinuxfs3 /app/build-osgeo.sh
+```
+2. this will output a `tar.gz` that will then be uploaded to github releases
+3. update the dependencies in the `manifest.yml` to reflect the new version
+
+
 
 ### Building the Buildpack
 
@@ -67,4 +125,4 @@ Open an issue on this project
 
 ## Disclaimer
 
-This buildpack is experimental and not yet intended for production use.
+This buildpack is experimental and has not been heavily tested in production. 
