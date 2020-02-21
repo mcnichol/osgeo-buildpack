@@ -10,13 +10,13 @@ dependencies:
   cf_stacks:
       - cflinuxfs3
   uri: https://github.com/warroyo/osgeo-buildpack/releases/download/v0.0.1/osgeolib-0.0.1-cflinuxfs3-linux-x64.tar.gz
-  sha256: ee20b20c02b56efc4f18fb7416b8077286acb17fd32c4062b1caf25f5e581e0e
+  sha256: e3a9736e0e4d886887974d6f3d530b5bf7dd6958073d7307bc183975cd3816ff
 - name: osgeo
   version: 0.0.1
   cf_stacks:
       - cflinuxfs2
   uri: https://github.com/warroyo/osgeo-buildpack/releases/download/v0.0.1/osgeolib-0.0.1-cflinuxfs2-linux-x64.tar.gz
-  sha256: ee20b20c02b56efc4f18fb7416b8077286acb17fd32c4062b1caf25f5e581e0e
+  sha256: 56269bf95225d817c423643fd49290a5abbe2a17d5e7d1a82d87047b14800c14
 
 include_files:
   - README.md
