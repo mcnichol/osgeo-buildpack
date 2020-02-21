@@ -43,6 +43,34 @@ applications:
 
 4. push your application, depending on if your buildpack is cached or not it may go to the internet to download the vendored osgeo libs.
 
+### Python offline Example
+
+assuming the cached version of the buildpack has been uploaded to the foundation here is a quick python example.
+
+1. cd into the `examples/python` dir in this repo
+
+`cd examples/python`
+
+2. vendor the dependencies
+
+```
+pip download -r requirements.txt --no-binary=:none: -d vendor
+```
+
+3. push the app to your foundation. this will trigger the use of the osgeo and python buildpacks. by having the `gdal` pip packaged vendored this will prevent it from going to the internet.
+
+```
+cf push -f manifest.yml
+```
+
+
+4. you will see the gdal buildpack run and then python. when python runs it will install the gdal python bindings. it may take a minute since it is compiling against the installed gdal packages.
+
+5. your app should be running now.
+
+
+
+
 ### Building the vendored osgeo libs
 **only needed to be done when updating versions of osgeo libs**
 

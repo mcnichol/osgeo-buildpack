@@ -1,0 +1,8 @@
+---
+applications:
+- name: test-gdal
+  buildpacks:
+  - osgeo_buildpack
+  - python_buildpack 
+  health-check-type: process
+  command: python test.py
