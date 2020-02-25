@@ -6,8 +6,15 @@ inspiration taken from this [buildpack](https://github.com/planetfederal/osgeoli
 
 ### Included Packages 
 
+#### GDAL 2.2.1
 * proj-6.3.1
-* gdal-3.0.4
+* gdal-2.2.1
+
+#### GDAL 3.0.4
+* proj-6.3.1
+* gdal-2.2.1
+
+to switch between versions use the `OSGEO_VERSION` env variable
 
 ### Added ENV Vars
 
@@ -22,7 +29,7 @@ the following vars are added to the runtime environment of the droplet
 
 ### Usage
 
-this buildpack will work with both `cflinuxfs2` or `cflinuxfs3`. you will need to use a different build for each though.
+this buildpack will work with both `cflinuxfs2` or `cflinuxfs3`. you will need to use a different build for each though.you can also specify the version of the compiled osgeo libs using an environment var `OSGEO_VERSION`. see the releases page for details
 
 the latest releases can be downloaded from the releases page in this repo. there are cached and unchached versions.
 
@@ -38,7 +45,11 @@ applications:
 - name: test-gdal
   buildpacks:
   - osgeo_buildpack
-  - python_buildpack 
+  - python_buildpack
+  #Optional version can be specified
+  env:
+    OSGEO_VERSION: 2.2.1
+
 ```
 
 4. push your application, depending on if your buildpack is cached or not it may go to the internet to download the vendored osgeo libs.

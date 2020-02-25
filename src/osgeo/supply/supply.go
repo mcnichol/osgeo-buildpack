@@ -3,6 +3,7 @@ package supply
 import (
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
 
 	"github.com/cloudfoundry/libbuildpack"
@@ -38,21 +39,39 @@ type Command interface {
 }
 
 type Supplier struct {
-	Manifest  Manifest
-	Installer Installer
-	Stager    Stager
-	Command   Command
-	Log       *libbuildpack.Logger
+	OsgeoVersion string
+	Manifest     Manifest
+	Installer    Installer
+	Stager       Stager
+	Command      Command
+	Log          *libbuildpack.Logger
 }
 
 func (s *Supplier) Run() error {
 	s.Log.BeginStep("Supplying osgeo")
 
 	var dep libbuildpack.Dependency
-	dep, err := s.Manifest.DefaultVersion("osgeo")
-	if err != nil {
-		return err
+
+	s.OsgeoVersion = os.Getenv("OSGEO_VERSION")
+	if s.OsgeoVersion != "" {
+		versions := s.Manifest.AllDependencyVersions("osgeo")
+		s.Log.Debug("***Version info: (%s)", s.OsgeoVersion)
+		ver, err := libbuildpack.FindMatchingVersion(s.OsgeoVersion, versions)
+		if err != nil {
+			return err
+		}
+		dep.Name = "osgeo"
+		dep.Version = ver
+		s.Log.Debug("***Version info: %s, %s, %s", dep.Name, s.OsgeoVersion, dep.Version)
+	} else {
+		var err error
+
+		dep, err = s.Manifest.DefaultVersion("osgeo")
+		if err != nil {
+			return err
+		}
 	}
+
 	OsgeoInstallDir := filepath.Join(s.Stager.DepDir(), "osgeo")
 	if err := s.Installer.InstallDependency(dep, OsgeoInstallDir); err != nil {
 		return err

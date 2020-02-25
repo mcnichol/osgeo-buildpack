@@ -2,21 +2,27 @@
 language: osgeo
 default_versions:
 - name: osgeo
-  version: 0.0.1
+  version: 3.0.x
 dependency_deprecation_dates: []
 dependencies:
 - name: osgeo
-  version: 0.0.1
+  version: 3.0.4
   cf_stacks:
       - cflinuxfs3
-  uri: https://github.com/warroyo/osgeo-buildpack/releases/download/v0.0.1/osgeolib-0.0.1-cflinuxfs3-linux-x64.tar.gz
+  uri: https://github.com/warroyo/osgeo-buildpack/releases/download/v0.0.1/osgeolib-3.0.4-cflinuxfs3-linux-x64.tar.gz
   sha256: e3a9736e0e4d886887974d6f3d530b5bf7dd6958073d7307bc183975cd3816ff
 - name: osgeo
-  version: 0.0.1
+  version: 2.2.1
+  cf_stacks:
+      - cflinuxfs3
+  uri: https://github.com/warroyo/osgeo-buildpack/releases/download/v0.0.1/osgeolib-2.2.1-cflinuxfs3-linux-x64.tar.gz
+  sha256: f62b1bf55f0853e8f5544e869af513a22735cad26c1d492d73346e86f96deb65
+- name: osgeo
+  version: 2.2.1
   cf_stacks:
       - cflinuxfs2
-  uri: https://github.com/warroyo/osgeo-buildpack/releases/download/v0.0.1/osgeolib-0.0.1-cflinuxfs2-linux-x64.tar.gz
-  sha256: 56269bf95225d817c423643fd49290a5abbe2a17d5e7d1a82d87047b14800c14
+  uri: https://github.com/warroyo/osgeo-buildpack/releases/download/v0.0.1/osgeolib-2.2.1-cflinuxfs2-linux-x64.tar.gz
+  sha256: 1321673ba0ab63d8c0e5f3d8fc72e222bedc9139921db426a62545c452ad98af
 
 include_files:
   - README.md
