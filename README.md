@@ -48,7 +48,7 @@ applications:
   - python_buildpack
   #Optional version can be specified
   env:
-    OSGEO_VERSION: 2.2.1
+    OSGEO_VERSION: 3.0.4
 
 ```
 

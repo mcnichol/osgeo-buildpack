@@ -2,7 +2,7 @@
 language: osgeo
 default_versions:
 - name: osgeo
-  version: 3.0.x
+  version: 2.2.x
 dependency_deprecation_dates: []
 dependencies:
 - name: osgeo
